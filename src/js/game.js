@@ -48,3 +48,114 @@ const tostring = (grid) => {
     // console.log(s);
     return s;
 }
+
+export const gameEnd = (grid) => {
+    let i = 0;
+    for (let j = 0; j < 4; j++) {
+        for (let k = 0; k < 4; k++) {
+            if (grid[j][k] !== i + 1) {
+                return false;
+            }
+            i++;
+        }
+
+    }
+    return true;
+}
+const bfs = (grid, i, j, visited) => {
+    if (gameEnd(grid) || i > 3 || j > 3 || i < 0 || j < 0) {
+        return []
+    } else if (visited[grid] == 1) {
+        return []
+    } else {
+        visited[grid] = 1;
+        let x = [];
+        if (i + 1 < 3) {
+            let temp = grid[i][j];
+            grid[i][j] = grid[i + 1][j];
+            grid[i + 1][j] = temp;
+            x = bfs(grid, i + 1, j, visited);
+            temp = grid[i][j];
+            grid[i][j] = grid[i + 1][j];
+            grid[i + 1][j] = temp;
+        }
+        let y = [];
+        if (j + 1 < 3) {
+            temp = grid[i][j];
+            grid[i][j] = grid[i][j + 1];
+            grid[i][j + 1] = temp;
+            y = bfs(grid, i, j + 1, visited);
+            temp = grid[i][j];
+            grid[i][j] = grid[i][j + 1];
+            grid[i][j + 1] = temp;
+        }
+        let z = [];
+        if (i - 1 >= 0) {
+            temp = grid[i][j];
+            grid[i][j] = grid[i - 1][j];
+            grid[i - 1][j] = temp;
+            z = bfs(grid, i - 1, j, visited);
+            temp = grid[i][j];
+            grid[i][j] = grid[i - 1][j];
+            grid[i - 1][j] = temp;
+
+        }
+        let k = [];
+        if (j - 1 >= 0) {
+            temp = grid[i][j];
+            grid[i][j] = grid[i][j - 1];
+            grid[i][j - 1] = temp;
+            k = bfs(grid, i, j - 1, visited);
+            temp = grid[i][j];
+            grid[i][j] = grid[i][j - 1];
+            grid[i][j - 1] = temp;
+        }
+        let arr = [x, y, z, k];
+        arr = arr.filter(x => (x.length > 0));
+        let xx = arr[0];
+        for (let x of arr) {
+            if (x.length < xx.length) {
+                xx = x;
+            }
+        }
+        if (xx == x) {
+            let temp = grid[i][j];
+            grid[i][j] = grid[i + 1][j];
+            grid[i + 1][j] = temp;
+            return [...xx, (i + 1) * 4 + j];
+        } else if (xx == y) {
+            let temp = grid[i][j];
+            grid[i][j] = grid[i][j + 1];
+            grid[i][j + 1] = temp;
+            return [...xx, (i) * 4 + j + 1];
+        } else if (xx == z) {
+            let temp = grid[i][j];
+            grid[i][j] = grid[i - 1][j];
+            grid[i - 1][j] = temp;
+            return [...xx, (i - 1) * 4 + j];
+        } else if (xx == k) {
+            let temp = grid[i][j];
+            grid[i][j] = grid[i][j - 1];
+            grid[i][j - 1] = temp;
+            return [...xx, (i) * 4 + j - 1];
+        }
+
+    }
+
+}
+export const getSolution = (grid) => {
+    let visited = {};
+    let ii = 0;
+    let jj = 0
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (grid[i][j] == 16) {
+                ii = i;
+                jj = j;
+                break
+            }
+
+        }
+    }
+    bfs(grid, ii, jj, visited);
+}
