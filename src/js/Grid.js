@@ -1,6 +1,6 @@
 import Tile from './tile';
 import { useState } from 'react';
-import { gameOver, scrabble, solution } from './game.js';
+import { gameOver, scrabble,getFinalSolution } from './game.js';
 let sequence = [
   '1',
   '2',
@@ -19,6 +19,10 @@ let sequence = [
   '15',
   '',
 ];
+
+
+// console.log(isOk('1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0','1 2 3 4 5 6 7 8 9 10 11 12 13 14 0 15'))
+
 export default function Grid() {
   const [seq, setSeq] = useState(scrabble(sequence));
   //   setSeq(sequence);
@@ -33,14 +37,18 @@ export default function Grid() {
   return (
     <div className="grid">
       <h1>{gameOver(seq) ? 'You Win' : 'Arrange in sequence'}</h1>
-      <button
+      {/* <button
         onClick={() => {
           console.log('Click the buttons in order of :');
           console.log(solution.reverse());
         }}
       >
         click me for solution in console
-      </button>
+      </button> */}
+      <button onClick={()=>{
+        // console.log(seq)
+        getFinalSolution(seq)
+      }}>Get optimized soln</button>
       <div className="grid-row">
         <Tile
           index={1}
